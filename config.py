@@ -6,3 +6,5 @@ load_dotenv()
 OPENAI_API_KEY=os.getenv("OPENAI_API_KEY")
 MODEL_NAME = "gpt-4.1-mini"
 EMBEDDING_MODEL = "text-embedding-3-small"
+RETRIEVAL_MODE_VECTOR = "vector"
+RETRIEVAL_MODE_BM25 = "bm25"
