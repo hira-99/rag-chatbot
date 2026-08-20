@@ -1,0 +1,82 @@
+[
+  {
+    "category": "direct_factual",
+    "question": "How many sick days are ByteMage employees allowed per month?",
+    "retrieval_query": "How many sick days are ByteMage employees allowed per month?",
+    "expected_answer": "Five days without additional approval.",
+    "relevant_chunk_ids": [
+      "leave-policy-001"
+    ],
+    "answerable": true
+  },
+  {
+    "category": "paraphrased",
+    "question": "What's the max number of sick days I can take without needing approval?",
+    "retrieval_query": "What's the max number of sick days I can take without needing approval?",
+    "expected_answer": "Five days without additional approval.",
+    "relevant_chunk_ids": [
+      "leave-policy-001"
+    ],
+    "answerable": true
+  },
+  {
+    "category": "exact_identifier",
+    "question": "What does regulatory requirement RX-118 require?",
+    "retrieval_query": "What does regulatory requirement RX-118 require?",
+    "expected_answer": "ByteMage must retain customer support data for at least seven years.",
+    "relevant_chunk_ids": [
+      "data-retention-policy-001"
+    ],
+    "answerable": true
+  },
+  {
+    "category": "multi_document",
+    "question": "Who founded ByteMage, and what is the company's current top product priority?",
+    "retrieval_query": "Who founded ByteMage, and what is the company's current top product priority?",
+    "expected_answer": "Founded by Alan Whitfield and Priya Kapoor; current priority is the AI Search Platform billing dashboard.",
+    "relevant_chunk_ids": [
+      "company-overview-001",
+      "product-roadmap-001"
+    ],
+    "answerable": true
+  },
+  {
+    "category": "unanswerable",
+    "question": "What is ByteMage's stock ticker symbol?",
+    "retrieval_query": "What is ByteMage's stock ticker symbol?",
+    "expected_answer": "Not available in the provided documents.",
+    "relevant_chunk_ids": [],
+    "answerable": false
+  },
+  {
+    "category": "contradictory_source",
+    "question": "How many sick days do ByteMage employees get?",
+    "retrieval_query": "How many sick days do ByteMage employees get?",
+    "expected_answer": "Five days, per the current policy. An outdated FAQ says three, but the current policy is authoritative.",
+    "relevant_chunk_ids": [
+      "leave-policy-001",
+      "legacy-faq-001"
+    ],
+    "answerable": true
+  },
+  {
+    "category": "follow_up",
+    "question": "When was it?",
+    "retrieval_query": "When was ByteMage founded?",
+    "expected_answer": "2015.",
+    "relevant_chunk_ids": [
+      "company-overview-001"
+    ],
+    "answerable": true
+  },
+  {
+    "category": "multi_part",
+    "question": "What is the leave allowance, who approves extended leave, and what happens to unused leave?",
+    "retrieval_query": "What is the leave allowance, who approves extended leave, and what happens to unused leave?",
+    "expected_answer": "Five days allowance; the employee's direct manager approves extended leave; unused days are forfeited, not rolled over.",
+    "relevant_chunk_ids": [
+      "leave-policy-001"
+    ],
+    "answerable": true
+  }
+]
