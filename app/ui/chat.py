@@ -1,10 +1,13 @@
 """Gradio chat interface: token streaming, tool-progress events, cancellation."""
+import gradio as gr
+
 from app.config import DEFAULT_USER_ID
 from app.database.connection import get_connection
 from app.database.models import (
     add_message,
     get_messages,
     get_or_create_conversation,
+    mark_last_assistant_message_replaced,
     new_conversation_id,
     rename_conversation,
 )
@@ -61,3 +64,30 @@ def bot_respond(chatbot_history, conversation_id):
         rename_conversation(conn, conversation_id, title)
 
     conn.close()
+
+
+def regenerate_response(retry_data: gr.RetryData, chatbot_history, conversation_id):
+    """Wired to Gradio Chatbot's native .retry() event (main.py) -- fires
+    when the user clicks the retry icon under the last assistant reply.
+
+    retry_data.index is the index of the USER message whose reply is being
+    regenerated (confirmed by testing live -- Gradio's own docstring example
+    is misleading about this). Truncating to that index keeps everything up
+    to and including that user message, dropping the old reply.
+
+    The old reply is marked replaced (is_active=0), not deleted -- the
+    roadmap's "mark it replaced" option, chosen over full branching to keep
+    this stage's scope manageable; the previous response is still in the
+    database for audit, just not shown or sent to the model again.
+
+    NOTE for when tools exist (a later stage): this must regenerate only the
+    model's reasoning/response, never re-execute tool calls that already
+    happened for this turn -- reuse their recorded results instead of
+    calling send_email etc. a second time.
+    """
+    conn = get_connection()
+    mark_last_assistant_message_replaced(conn, conversation_id)
+    conn.close()
+
+    truncated_history = chatbot_history[: retry_data.index + 1]
+    yield from bot_respond(truncated_history, conversation_id)

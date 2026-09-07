@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS messages (
     content TEXT NOT NULL,
     created_at TEXT NOT NULL,
     token_count INTEGER,
-    run_id TEXT
+    run_id TEXT,
+    is_active INTEGER NOT NULL DEFAULT 1
 )
 """
 
@@ -71,12 +72,34 @@ def add_message(conn, conversation_id, user_id, role, content, token_count=None,
     return message_id
 
 
-def get_messages(conn, conversation_id):
-    rows = conn.execute(
-        "SELECT * FROM messages WHERE conversation_id = ? ORDER BY created_at",
-        (conversation_id,),
-    ).fetchall()
+def get_messages(conn, conversation_id, include_replaced=False):
+    """Active messages only by default -- a response that's been regenerated
+    (is_active=0, see mark_last_assistant_message_replaced) shouldn't show up
+    in the chat pane or be sent to the model. `include_replaced=True` is for
+    audit/debugging, not normal use."""
+    if include_replaced:
+        query = "SELECT * FROM messages WHERE conversation_id = ? ORDER BY created_at"
+    else:
+        query = "SELECT * FROM messages WHERE conversation_id = ? AND is_active = 1 ORDER BY created_at"
+    rows = conn.execute(query, (conversation_id,)).fetchall()
     return [dict(row) for row in rows]
+
+
+def mark_last_assistant_message_replaced(conn, conversation_id):
+    """Response regeneration: mark the current assistant reply as replaced
+    (is_active=0) rather than deleting it -- the old response stays in the
+    database for audit, it just stops being shown or sent to the model."""
+    row = conn.execute(
+        """
+        SELECT message_id FROM messages
+        WHERE conversation_id = ? AND role = 'assistant' AND is_active = 1
+        ORDER BY created_at DESC LIMIT 1
+        """,
+        (conversation_id,),
+    ).fetchone()
+    if row:
+        conn.execute("UPDATE messages SET is_active = 0 WHERE message_id = ?", (row["message_id"],))
+        conn.commit()
 
 
 def list_conversations(conn, user_id, search_query=None):

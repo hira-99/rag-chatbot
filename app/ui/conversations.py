@@ -53,8 +53,15 @@ def start_new_conversation():
     """A fresh, not-yet-persisted conversation_id and an empty chat pane.
     No database row until the first message (same lazy-creation reasoning
     as A.2) -- so clicking "New" repeatedly never litters the sidebar with
-    empty conversations."""
-    return new_conversation_id(), []
+    empty conversations.
+
+    Also clears the sidebar Radio's own selected value -- without this, the
+    Radio keeps showing the *previous* conversation as selected (it was
+    never told otherwise), and clicking that same still-highlighted row
+    again does nothing, because Gradio's .change() only fires on an actual
+    value change.
+    """
+    return new_conversation_id(), [], gr.update(value=None)
 
 
 def do_rename(conversation_id, new_title):
@@ -75,5 +82,5 @@ def do_delete(conversation_id):
         conn = get_connection()
         delete_conversation(conn, conversation_id)
         conn.close()
-    new_id, empty_history = start_new_conversation()
+    new_id, empty_history, _ = start_new_conversation()
     return refresh_conversation_choices(), new_id, empty_history
