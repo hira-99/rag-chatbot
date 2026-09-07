@@ -1,4 +1,6 @@
-"""Attachment/document metadata schema and content hashing.
+"""Content hashing used to detect a byte-identical re-upload (C.5)."""
+import hashlib
 
-TODO: implement (see roadmap Step 27).
-"""
+
+def content_hash(raw_bytes):
+    return hashlib.sha256(raw_bytes).hexdigest()

@@ -1,4 +1,6 @@
-"""Load .txt files into normalized text + metadata.
+"""Plain text (.txt) file loader."""
 
-TODO: implement (see roadmap Step 27).
-"""
+
+def load_text(file_path):
+    with open(file_path, "r", encoding="utf-8", errors="replace") as f:
+        return f.read()

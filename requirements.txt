@@ -6,3 +6,6 @@ chromadb
 tiktoken
 mcp<2
 python-dotenv
+markdown
+beautifulsoup4
+pypdf

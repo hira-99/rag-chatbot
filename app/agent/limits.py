@@ -1,4 +1,4 @@
-"""Step/cost/time limits shared by the loop and planner.
+"""Step limit shared by the agent loop -- a hard ceiling on tool-calling
+rounds within a single turn, so a confused model can't loop forever."""
 
-TODO: implement (see roadmap Step 27).
-"""
+MAX_STEPS = 6

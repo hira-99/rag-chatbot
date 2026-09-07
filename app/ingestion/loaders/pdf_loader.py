@@ -1,4 +1,7 @@
-"""Load .pdf files page-by-page into normalized text + metadata.
+"""PDF file loader."""
+from pypdf import PdfReader
 
-TODO: implement (see roadmap Step 27).
-"""
+
+def load_pdf(file_path):
+    reader = PdfReader(file_path)
+    return "\n\n".join(page.extract_text() or "" for page in reader.pages)
