@@ -3,6 +3,9 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Local SQLite databases (dev state / test data, never committed)
+*.db
+
 # C extensions
 *.so
 

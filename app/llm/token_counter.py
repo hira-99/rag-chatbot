@@ -1,4 +1,8 @@
-"""Token counting utilities.
+"""Token counting utilities."""
+import tiktoken
 
-TODO: implement (see roadmap Step 27).
-"""
+_encoding = tiktoken.get_encoding("cl100k_base")
+
+
+def count_tokens(text):
+    return len(_encoding.encode(text or ""))

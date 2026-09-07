@@ -47,3 +47,25 @@ def stream_chat_completion(messages):
         yield f"❌ Invalid request: {e}"
     except Exception as e:
         yield f"❌ Unexpected error: {e}"
+
+
+def generate_title(user_message, assistant_message):
+    """A short conversation title from its first exchange. Not streamed --
+    it's small and the caller needs the whole thing before saving it."""
+    try:
+        response = client.chat.completions.create(
+            model=MODEL_NAME,
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "Write a short, specific conversation title (3-6 words). "
+                        "No quotes, no trailing punctuation."
+                    ),
+                },
+                {"role": "user", "content": f"User: {user_message}\nAssistant: {assistant_message}"},
+            ],
+        )
+        return response.choices[0].message.content.strip()
+    except Exception:
+        return "New conversation"
